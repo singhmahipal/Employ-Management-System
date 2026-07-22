@@ -6,8 +6,18 @@ import { AuthContext } from "./context/AuthProvider.jsx";
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [loggedInUserData, setLoggedInUserData] = useState(null);
 
   const authData = useContext(AuthContext);
+
+  useEffect(() => {
+    if (authData) {
+      const LoggedInUser = localStorage.getItem("LoggedInUser");
+      if (LoggedInUser) {
+        setUser(LoggedInUser.role);
+      }
+    }
+  }, [authData]);
 
   const handleLogin = (email, password) => {
     if (
@@ -15,11 +25,22 @@ const App = () => {
       authData.admin.find((a) => email == a.email && password == a.password)
     ) {
       setUser("admin");
+      localStorage.setItem("LoggedInUser", JSON.stringify({ role: "admin" }));
     } else if (
       authData &&
       authData.employees.find((e) => email == e.email && password == e.password)
     ) {
+      const employee = authData.employees.find(
+        (e) => e.email === email && e.password === password,
+      );
+      if (employee) {
+        setLoggedInUserData(employee);
+      }
       setUser("employee");
+      localStorage.setItem(
+        "LoggedInUser",
+        JSON.stringify({ role: "employee" }),
+      );
     } else {
       alert("invalid credentials");
     }
@@ -27,8 +48,13 @@ const App = () => {
 
   return (
     <>
-      {!user ? <Login handleLogin={handleLogin} /> : ""}
-      {user == "employee" ? <EmployeeDashboard /> : <AdminDashboard />}
+      {!user ? (
+        <Login handleLogin={handleLogin} />
+      ) : user == "employee" ? (
+        <EmployeeDashboard data={loggedInUserData} />
+      ) : (
+        <AdminDashboard />
+      )}
     </>
   );
 };
