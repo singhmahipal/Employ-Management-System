@@ -48,13 +48,14 @@ const App = () => {
 
   return (
     <>
-      {!user ? (
+      {/* {!user ? (
         <Login handleLogin={handleLogin} />
       ) : user == "employee" ? (
         <EmployeeDashboard data={loggedInUserData} />
       ) : (
         <AdminDashboard />
-      )}
+      )} */}
+      <AdminDashboard />
     </>
   );
 };
