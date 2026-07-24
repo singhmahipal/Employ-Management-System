@@ -12,3 +12,7 @@ body {
 #tasklist::-webkit-scrollbar {
 display: none;
 }
+
+textarea {
+  color: #fff;
+}
